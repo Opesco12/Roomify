@@ -4,13 +4,14 @@ import { useFormikContext } from "formik";
 import colors from "../constants/Colors";
 import AppTextInput from "./AppTextInput";
 
-const AppFormField = ({ name, ...props }) => {
+const AppFormField = ({ name, customStyles, ...props }) => {
   const { values, handleChange, errors, touched } = useFormikContext();
   return (
     <>
       <AppTextInput
         onChangeText={handleChange(name)}
         value={values[name]}
+        customStyles={customStyles}
         {...props}
       />
 

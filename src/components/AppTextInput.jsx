@@ -2,12 +2,12 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 
 import colors from "../constants/Colors";
 
-const AppTextInput = ({ placeholder, type, ...otherProps }) => {
+const AppTextInput = ({ placeholder, type, customStyles, ...otherProps }) => {
   return (
     <View>
       <TextInput
         placeholder={placeholder}
-        style={styles.input}
+        style={[styles.input, customStyles]}
         keyboardType={type}
         {...otherProps}
       />

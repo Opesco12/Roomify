@@ -2,19 +2,10 @@ import { ScrollView, StatusBar, StyleSheet, View } from "react-native";
 
 const StatusBarHeight = StatusBar.currentHeight;
 
-const AppScreen = ({ children, backgroundColor }) => {
+const AppScreen = ({ children, customStyles }) => {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: backgroundColor,
-          },
-        ]}
-      >
-        {children}
-      </View>
+      <View style={[styles.container, customStyles]}>{children}</View>
     </ScrollView>
   );
 };

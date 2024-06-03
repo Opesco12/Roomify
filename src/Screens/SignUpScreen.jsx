@@ -11,7 +11,7 @@ const SignUp = () => {
   const Tab = createMaterialTopTabNavigator();
   return (
     <NavigationContainer>
-      <AppScreen backgroundColor={colors.white}>
+      <AppScreen customStyles={{ backgroundColor: colors.white }}>
         <Tab.Navigator>
           <Tab.Screen name="student" component={StudentSignUp} />
           <Tab.Screen name="agent" component={AgentSignUp} />
