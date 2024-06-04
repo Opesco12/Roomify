@@ -50,54 +50,58 @@ const UploadScreen = () => {
     }
   };
   return (
-    <AppScreen>
-      <Text>Upload Screen</Text>
-      <Formik onSubmit={(values) => console.log(values)} initialValues={{}}>
-        {({ handleSubmit }) => (
-          <>
-            <AppFormField name={"title"} placeholder="Title" />
-            <AppFormField
-              name={"description"}
-              placeholder="Description"
-              multiline
-              customStyles={styles.textInput}
-            />
-            <AppFormField name="location" placeholder="Location" />
-            <AppFormField name="price" placeholder="Price" />
-            <View style={styles.selectImage}>
-              <Pressable
-                onPress={() => {
-                  pickImage();
-                }}
-                style={{ width: "20%" }}
-              >
-                <View style={[styles.imagePicker]}>
-                  <Text style={[styles.text, { marginBottom: 0 }]}>
-                    {images.length > 0 && images.length}
-                  </Text>
-                  <MaterialCommunityIcons name="chevron-down" size={24} />
+    <AppScreen screen="Upload">
+      <View style={styles.formContainer}>
+        <Formik onSubmit={(values) => console.log(values)} initialValues={{}}>
+          {({ handleSubmit }) => (
+            <>
+              <AppFormField name={"title"} placeholder="Title" />
+              <AppFormField
+                name={"description"}
+                placeholder="Description"
+                multiline
+                customStyles={styles.textInput}
+              />
+              <AppFormField name="location" placeholder="Location" />
+              <AppFormField name="price" placeholder="Price" />
+              <View style={styles.selectImage}>
+                <Pressable
+                  onPress={() => {
+                    pickImage();
+                  }}
+                  style={{ width: "20%" }}
+                >
+                  <View style={[styles.imagePicker]}>
+                    <Text style={[styles.text, { marginBottom: 0 }]}>
+                      {images.length > 0 && images.length}
+                    </Text>
+                    <MaterialCommunityIcons name="chevron-down" size={24} />
+                  </View>
+                </Pressable>
+                <View style={styles.previewImage}>
+                  {images.map((image, index) => (
+                    <TouchableWithoutFeedback
+                      key={index}
+                      onPress={() => {
+                        setCurrentImage(index);
+                        setVisible(true);
+                      }}
+                    >
+                      <Image
+                        source={{ uri: image.uri }}
+                        style={styles.images}
+                      />
+                    </TouchableWithoutFeedback>
+                  ))}
                 </View>
-              </Pressable>
-              <View style={styles.previewImage}>
-                {images.map((image, index) => (
-                  <TouchableWithoutFeedback
-                    key={index}
-                    onPress={() => {
-                      setCurrentImage(index);
-                      setVisible(true);
-                    }}
-                  >
-                    <Image source={{ uri: image.uri }} style={styles.images} />
-                  </TouchableWithoutFeedback>
-                ))}
               </View>
-            </View>
-            <Text style={styles.text}>You can select up to 5 images</Text>
+              <Text style={styles.text}>You can select up to 5 images</Text>
 
-            <AppButton text={"Upload"} />
-          </>
-        )}
-      </Formik>
+              <AppButton text={"Upload"} />
+            </>
+          )}
+        </Formik>
+      </View>
       <ImageView
         images={images}
         imageIndex={currentImage}
@@ -111,6 +115,9 @@ const UploadScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  formContainer: {
+    marginTop: 20,
+  },
   imagePicker: {
     alignItems: "center",
     backgroundColor: colors.light,

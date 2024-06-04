@@ -10,8 +10,7 @@ const HomeScreen = () => {
     require("../assets/images/house_3.jpg"),
   ];
   return (
-    <AppScreen>
-      <Text>Home Screen</Text>
+    <AppScreen screen="Home">
       <AppBox />
       <AppBox />
       <AppBox />

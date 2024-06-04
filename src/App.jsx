@@ -8,6 +8,8 @@ import UploadScreen from "./Screens/UploadScreen";
 import colors from "./constants/Colors";
 import HomeScreen from "./Screens/HomeScreen";
 import SearchScreen from "./Screens/SearchScreen";
+import MessagesScreen from "./Screens/MessagesScreen";
+import ChatScreen from "./Screens/ChatScreen";
 
 const App = () => {
   return (
@@ -16,9 +18,11 @@ const App = () => {
       {/* <LoginScreen /> */}
       {/* <SignUp /> */}
       {/* <UploadDetailsScreen /> */}
-      {/* <UploadScreen /> */}
+      <UploadScreen />
       {/* <HomeScreen /> */}
-      <SearchScreen />
+      {/* <SearchScreen /> */}
+      {/* <MessagesScreen /> */}
+      {/* <ChatScreen /> */}
     </>
   );
 };
