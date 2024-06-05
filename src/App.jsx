@@ -11,6 +11,9 @@ import SearchScreen from "./Screens/SearchScreen";
 import MessagesScreen from "./Screens/MessagesScreen";
 import ChatScreen from "./Screens/ChatScreen";
 
+import TabNavigator from "./Navigation/TabNavigator";
+import DrawerNavigator from "./Navigation/DrawerNavigator";
+
 const App = () => {
   return (
     <>
@@ -18,11 +21,13 @@ const App = () => {
       {/* <LoginScreen /> */}
       {/* <SignUp /> */}
       {/* <UploadDetailsScreen /> */}
-      <UploadScreen />
+      {/* <UploadScreen /> */}
       {/* <HomeScreen /> */}
       {/* <SearchScreen /> */}
       {/* <MessagesScreen /> */}
       {/* <ChatScreen /> */}
+      {/* <TabNavigator /> */}
+      <DrawerNavigator />
     </>
   );
 };
