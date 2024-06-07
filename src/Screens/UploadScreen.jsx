@@ -14,22 +14,85 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ImageView from "react-native-image-viewing";
 import { Asset } from "expo-asset";
 
+import {
+  getStorage,
+  uploadBytesResumable,
+  uploadBytes,
+  ref,
+  getDownloadURL,
+} from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
+
 import AppScreen from "../components/AppScreen";
 import AppFormField from "../components/AppFormField";
 import AppButton from "../components/AppButton";
 import colors from "../constants/Colors";
 
+import { storageRef, db } from "../../firebaseConfig";
+
 const UploadScreen = () => {
+  const imagesRef = ref(storageRef, "images");
+
+  const uploadImages = async (images) => {
+    const uploadTasks = [];
+    const downloadUrls = [];
+
+    for (const image of images) {
+      try {
+        const fileName = await `${Date.now()}_${image.fileName}`;
+        const fileRef = await ref(imagesRef, fileName);
+
+        const response = await fetch(image.uri);
+        const blob = await response.blob();
+
+        const uploadTask = await uploadBytes(fileRef, blob);
+        uploadTasks.push(uploadTask);
+
+        const downloadUrl = await getDownloadURL(uploadTask.ref);
+        downloadUrls.push(downloadUrl);
+      } catch (err) {
+        console.log("unable to upload files", err);
+      }
+      setImageUrls(downloadUrls);
+    }
+  };
+
+  const createPost = async () => {
+    try {
+      console.log("Got here");
+      const docRef = await addDoc(collection(db, "users"), {
+        firstName: "Emmanuel",
+        lastName: "Oyeleke",
+      });
+      console.log("then here");
+      console.log("Document uploaded with ID: ", docRef.id);
+    } catch (err) {
+      console.log("Error adding post", err);
+    }
+  };
+
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     description: Yup.string().required("Description is required"),
     location: Yup.string().required("Location is required"),
-    price: Yup.number().required("Price is required"),
+    price: Yup.number("Price must be a number").required("Price is required"),
+    images: Yup.array()
+      .required("Select at least one image")
+      .min(1, "Select at least one image")
+      .test("fileFormat", "Unsupported File Format", (values) =>
+        values.every(
+          (value) => typeof value === "object" && value.uri && value.fileName
+        )
+      ),
   });
+
   const maxValue = 5;
   const [images, setImages] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
   const [currentImage, setCurrentImage] = useState(null);
   const [visible, setVisible] = useState(false);
+  const [post, setPost] = useState({});
+
   const pickImage = async () => {
     if (images.length < maxValue) {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -44,7 +107,10 @@ const UploadScreen = () => {
       // console.log(result);
       if (!result.canceled) {
         result.assets.forEach(async (asset) => {
-          setImages((prev) => [...prev, { uri: asset.uri }]);
+          setImages((prev) => [
+            ...prev,
+            { uri: asset.uri, fileName: asset.fileName },
+          ]);
         });
       }
     }
@@ -52,8 +118,22 @@ const UploadScreen = () => {
   return (
     <AppScreen screen="Upload">
       <View style={styles.formContainer}>
-        <Formik onSubmit={(values) => console.log(values)} initialValues={{}}>
-          {({ handleSubmit }) => (
+        <Formik
+          validationSchema={validationSchema}
+          onSubmit={(values, { setSubmitting }) => {
+            console.log(values);
+            console.log("Got here");
+            setSubmitting(false);
+          }}
+          initialValues={{
+            title: "heyy",
+            description: "",
+            location: "",
+            price: "",
+            images: images.length > 0 ? images : undefined,
+          }}
+        >
+          {({ handleSubmit, isSubmitting, errors }) => (
             <>
               <AppFormField name={"title"} placeholder="Title" />
               <AppFormField
@@ -75,7 +155,11 @@ const UploadScreen = () => {
                     <Text style={[styles.text, { marginBottom: 0 }]}>
                       {images.length > 0 && images.length}
                     </Text>
-                    <MaterialCommunityIcons name="chevron-down" size={24} />
+                    <MaterialCommunityIcons
+                      name="chevron-down"
+                      size={24}
+                      color={colors.black}
+                    />
                   </View>
                 </Pressable>
                 <View style={styles.previewImage}>
@@ -95,9 +179,25 @@ const UploadScreen = () => {
                   ))}
                 </View>
               </View>
-              <Text style={styles.text}>You can select up to 5 images</Text>
+              <Text
+                style={[
+                  styles.text,
+                  {
+                    color: errors.images ? colors.error : colors.black,
+                    opacity: errors.images ? 1 : 0.5,
+                  },
+                ]}
+              >
+                {errors.images
+                  ? errors.images
+                  : "You can select up to 5 images"}
+              </Text>
 
-              <AppButton text={"Upload"} />
+              <AppButton
+                text={"Upload"}
+                onPress={handleSubmit}
+                disabled={isSubmitting}
+              />
             </>
           )}
         </Formik>
@@ -148,7 +248,7 @@ const styles = StyleSheet.create({
   },
   text: {
     opacity: 0.5,
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 20,
   },
 });

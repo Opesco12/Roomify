@@ -13,21 +13,13 @@ import ChatScreen from "./Screens/ChatScreen";
 
 import TabNavigator from "./Navigation/TabNavigator";
 import DrawerNavigator from "./Navigation/DrawerNavigator";
+import Navigator from "./Navigation/Navigator";
 
 const App = () => {
   return (
     <>
       <StatusBar backgroundColor={colors.primary} />
-      {/* <LoginScreen /> */}
-      {/* <SignUp /> */}
-      {/* <UploadDetailsScreen /> */}
-      {/* <UploadScreen /> */}
-      {/* <HomeScreen /> */}
-      {/* <SearchScreen /> */}
-      {/* <MessagesScreen /> */}
-      {/* <ChatScreen /> */}
-      {/* <TabNavigator /> */}
-      <DrawerNavigator />
+      <Navigator />
     </>
   );
 };

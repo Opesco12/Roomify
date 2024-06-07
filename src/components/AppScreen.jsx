@@ -13,6 +13,10 @@ const AppScreen = ({ children, customStyles, screen }) => {
     navigation.dispatch(DrawerActions.toggleDrawer());
   };
 
+  const goBack = () => {
+    navigation.goBack();
+  };
+
   const iconSelector = (screen) => {
     if (
       screen === "Home" ||
@@ -24,6 +28,19 @@ const AppScreen = ({ children, customStyles, screen }) => {
     return "arrow-back";
   };
 
+  const onPress = (screen) => {
+    if (
+      screen === "Home" ||
+      screen === "Search" ||
+      screen === "Upload" ||
+      screen === "Messages"
+    ) {
+      return toggleDrawer;
+    } else {
+      return goBack;
+    }
+  };
+
   return (
     <View style={[styles.container, customStyles]}>
       <Header
@@ -31,7 +48,7 @@ const AppScreen = ({ children, customStyles, screen }) => {
         leftComponent={{
           icon: iconSelector(screen),
           color: colors.white,
-          onPress: toggleDrawer,
+          onPress: onPress(screen),
         }}
         centerComponent={{
           text: screen,

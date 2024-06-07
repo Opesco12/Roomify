@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Avatar, Icon } from "react-native-elements";
+import { useNavigation } from "@react-navigation/native";
 
 import colors from "../constants/Colors";
 
 const AppDrawerContent = (props) => {
+  const navigation = useNavigation();
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.avatar}>
@@ -17,7 +19,7 @@ const AppDrawerContent = (props) => {
         <Text style={styles.text}>Emmanuel Oyeleke | Student</Text>
       </View>
       <DrawerItem
-        label="Posts"
+        label="My Posts"
         icon={({ size }) => <Icon name="send" size={size} />}
         labelStyle={{ fontSize: 16 }}
         style={{
@@ -25,12 +27,14 @@ const AppDrawerContent = (props) => {
           borderTopWidth: 1,
           borderColor: colors.light,
         }}
+        onPress={() => navigation.navigate("MyPosts")}
       />
       <DrawerItem
         label="Change Password"
         icon={({ size }) => <Icon name="lock" size={size} />}
         labelStyle={{ fontSize: 16 }}
         style={{ borderBottomWidth: 1, borderBottomColor: colors.light }}
+        onPress={() => navigation.navigate("ChangePassword")}
       />
       <DrawerItem
         label="Logout"

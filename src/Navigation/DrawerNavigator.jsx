@@ -7,14 +7,12 @@ import AppDrawerContent from "../components/AppDrawerContent";
 const DrawerNavigator = () => {
   const Drawer = createDrawerNavigator();
   return (
-    <NavigationContainer>
-      <Drawer.Navigator
-        screenOptions={{ headerShown: false }}
-        drawerContent={(props) => <AppDrawerContent {...props} />}
-      >
-        <Drawer.Screen name="Tabs" component={TabNavigator} />
-      </Drawer.Navigator>
-    </NavigationContainer>
+    <Drawer.Navigator
+      screenOptions={{ headerShown: false }}
+      drawerContent={(props) => <AppDrawerContent {...props} />}
+    >
+      <Drawer.Screen name="Tabs" component={TabNavigator} />
+    </Drawer.Navigator>
   );
 };
 

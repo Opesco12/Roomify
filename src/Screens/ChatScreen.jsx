@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { useState, useCallback } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
 import { Header } from "react-native-elements";
+import { useNavigation } from "@react-navigation/native";
 
 import AppScreen from "../components/AppScreen";
 import colors from "../constants/Colors";
@@ -99,6 +100,8 @@ const ChatScreen = () => {
       },
     },
   ]);
+
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <Header
@@ -106,7 +109,7 @@ const ChatScreen = () => {
         leftComponent={{
           icon: "arrow-back",
           color: "#fff",
-          onPress: () => goBack(),
+          onPress: () => navigation.goBack(),
         }}
         centerComponent={{
           text: "Sarah",

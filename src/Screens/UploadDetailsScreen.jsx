@@ -10,12 +10,14 @@ import {
 import { useState } from "react";
 import Swiper from "react-native-swiper";
 import ImageView from "react-native-image-viewing";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 import AppScreen from "../components/AppScreen";
 import colors from "../constants/Colors";
 
 const UploadDetailsScreen = () => {
+  const navigation = useNavigation();
   const [currentImage, setCurrentImage] = useState(null);
   const [visible, setVisible] = useState(false);
 
@@ -30,10 +32,22 @@ const UploadDetailsScreen = () => {
       style={[
         styles.container,
         {
-          //   paddingTop: visible ? 0 : statusBarHeight,
+          // paddingTop: visible ? 0 : statusBarHeight,
         },
       ]}
     >
+      <TouchableWithoutFeedback onPress={() => navigation.goBack()}>
+        <View
+          style={[
+            styles.backButton,
+            {
+              top: statusBarHeight + 5,
+            },
+          ]}
+        >
+          <Ionicons name="arrow-back" size={24} />
+        </View>
+      </TouchableWithoutFeedback>
       <View style={styles.images}>
         <Swiper
           style={{ height: "100%" }}
@@ -61,7 +75,11 @@ const UploadDetailsScreen = () => {
           <Text style={[styles.text, { fontSize: 18, fontWeight: "600" }]}>
             One Room Self Contain
           </Text>
-          <Ionicons name="chatbubble-ellipses-outline" size={24} />
+          <Ionicons
+            name="chatbubble-ellipses-outline"
+            size={24}
+            onPress={() => navigation.navigate("Chat")}
+          />
         </View>
         <Text style={styles.text}>
           Basic Rent: ₦{(100000).toLocaleString("en-US")}
@@ -90,6 +108,17 @@ const UploadDetailsScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  backButton: {
+    alignItems: "center",
+    backgroundColor: colors.light,
+    borderRadius: 25,
+    height: 40,
+    justifyContent: "center",
+    left: 10,
+    position: "absolute",
+    width: 40,
+    zIndex: 3,
+  },
   container: {
     flex: 1,
   },

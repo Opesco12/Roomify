@@ -4,7 +4,7 @@ import { Avatar } from "react-native-elements";
 import colors from "../constants/Colors";
 import AppItemSeparator from "./AppItemSeparator";
 
-const AppMessagesPreview = ({ title, subtitle }) => {
+const AppMessagesPreview = ({ title, subtitle, onPress }) => {
   const colors = [
     "#2C3E50",
     "#34495E",
@@ -28,7 +28,7 @@ const AppMessagesPreview = ({ title, subtitle }) => {
   const avatarTitle = title.slice(0, 1);
   return (
     <>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onPress}>
         <View style={styles.container}>
           <Avatar
             rounded

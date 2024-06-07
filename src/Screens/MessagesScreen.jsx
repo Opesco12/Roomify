@@ -51,7 +51,11 @@ const MessagesScreen = () => {
           data={messages}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <AppMessagesPreview title={item.name} subtitle={item.message} />
+            <AppMessagesPreview
+              title={item.name}
+              subtitle={item.message}
+              onPress={() => navigation.navigate("Chat")}
+            />
           )}
         />
       </View>
