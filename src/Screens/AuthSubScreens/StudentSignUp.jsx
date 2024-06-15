@@ -114,11 +114,7 @@ const StudentSignUp = () => {
       >
         {({ handleSubmit, values }) => (
           <View>
-            <AppFormField
-              autoFocus
-              name="firstName"
-              placeholder={"First Name"}
-            />
+            <AppFormField name="firstName" placeholder={"First Name"} />
             <AppFormField name="lastName" placeholder={"Last Name"} />
             <AppFormField
               name={"email"}

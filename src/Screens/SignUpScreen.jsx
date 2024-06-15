@@ -19,7 +19,7 @@ const SignUp = () => {
       <AppHeader
         backgroundColor={colors.primary}
         centerComponent={{
-          text: "Login",
+          text: "Sign Up",
           style: { color: colors.white, fontSize: 18 },
         }}
       />

@@ -54,13 +54,13 @@ const AppDrawerContent = (props) => {
         }}
         onPress={() => navigation.navigate("MyPosts")}
       />
-      <DrawerItem
+      {/* <DrawerItem
         label="Change Password"
         icon={({ size }) => <Icon name="lock" size={size} />}
         labelStyle={{ fontSize: 16 }}
         style={{ borderBottomWidth: 1, borderBottomColor: colors.light }}
         onPress={() => navigation.navigate("ChangePassword")}
-      />
+      /> */}
       <DrawerItem
         label="Logout"
         icon={({ size }) => <Icon name="logout" size={size} />}

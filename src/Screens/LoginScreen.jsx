@@ -1,4 +1,11 @@
-import { StyleSheet, View, Text, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { useEffect } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -69,35 +76,37 @@ const LoginScreen = () => {
                     placeholder={"Email"}
                     type={"email-address"}
                     name="email"
-                    autoFocus
                   />
                   <AppFormField
                     placeholder={"Password"}
                     secureTextEntry
                     name="password"
                   />
-                  <Text
-                    style={[
-                      styles.text,
-                      { marginBottom: 0, textAlign: "right" },
-                    ]}
+                  <Pressable
+                    onPress={() => navigation.navigate("ForgotPassword")}
                   >
-                    Forgot Password?
-                  </Text>
+                    <Text
+                      style={[
+                        styles.text,
+                        { marginBottom: 5, textAlign: "right" },
+                      ]}
+                    >
+                      Forgot Password?
+                    </Text>
+                  </Pressable>
                   <AppButtonBg text={"Login"} onPress={handleSubmit} />
                 </View>
               </>
             )}
           </Formik>
-          <Text style={styles.bottomText}>
-            Don't have an account?
-            <Text
-              style={{ color: colors.primary }}
+          <View style={styles.bottomContainer}>
+            <Text style={styles.bottomText}>Don't have an account?</Text>
+            <TouchableWithoutFeedback
               onPress={() => handleNavigation("Signup")}
             >
-              Sign Up
-            </Text>
-          </Text>
+              <Text style={{ color: colors.primary }}>Sign Up</Text>
+            </TouchableWithoutFeedback>
+          </View>
         </ScrollView>
       </View>
     </View>
@@ -105,6 +114,11 @@ const LoginScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  bottomContainer: {
+    alignSelf: "center",
+    flexDirection: "row",
+    gap: 5,
+  },
   container: {
     backgroundColor: colors.white,
     flex: 1,
@@ -119,8 +133,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   bottomText: {
-    alignItems: "center",
-    textAlign: "center",
     fontWeight: "500",
     fontSize: 15,
   },
