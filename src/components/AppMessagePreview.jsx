@@ -4,7 +4,20 @@ import { Avatar } from "react-native-elements";
 import colors from "../constants/Colors";
 import AppItemSeparator from "./AppItemSeparator";
 
-const AppMessagesPreview = ({ title, subtitle, onPress }) => {
+const AppMessagesPreview = ({ item, subtitle, onPress, userId }) => {
+  const renderOtherParticipant = (item) => {
+    const otherParticipant = item.participantsInfo.find(
+      (participant) => participant.id !== userId
+    );
+    return otherParticipant.name;
+  };
+
+  const getReceiverId = (item) => {
+    const Receiver = item.participantsInfo.find(
+      (participant) => participant.id !== userId
+    );
+    return Receiver.id;
+  };
   const colors = [
     "#2C3E50",
     "#34495E",
@@ -25,16 +38,22 @@ const AppMessagesPreview = ({ title, subtitle, onPress }) => {
 
   const randomIndex = Math.floor(Math.random() * colors.length);
   const randomColor = colors[randomIndex];
-  const avatarTitle = title.slice(0, 1);
+  const title = renderOtherParticipant(item);
+  const avatarTitle = title && title.slice(0, 1);
+  const receiverId = getReceiverId(item);
+  const conversationId = item.id;
+
   return (
     <>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity
+        onPress={() => onPress(userId, receiverId, conversationId)}
+      >
         <View style={styles.container}>
           <Avatar
             rounded
             size={"medium"}
             containerStyle={{ backgroundColor: randomColor }}
-            title={avatarTitle}
+            title={avatarTitle && avatarTitle}
           />
           <View style={styles.messagePreview}>
             <Text

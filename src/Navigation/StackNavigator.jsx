@@ -5,11 +5,15 @@ import DrawerNavigator from "./DrawerNavigator";
 import ChangePasswordScreen from "../Screens/ChangePasswordScreen";
 import UploadDetailsScreen from "../Screens/UploadDetailsScreen";
 import UserPostsScreen from "../Screens/UserPostsScreen";
+import SignUpScreen from "../Screens/SignUpScreen";
+import LoginScreen from "../Screens/LoginScreen";
 
 const StackNavigator = () => {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Signup" component={SignUpScreen} />
       <Stack.Screen name="Index" component={DrawerNavigator} />
       <Stack.Screen name="Chat" component={ChatScreen} />
       <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />

@@ -3,6 +3,7 @@ import { Header } from "react-native-elements";
 import { useNavigation, DrawerActions } from "@react-navigation/native";
 
 import colors from "../constants/Colors";
+import AppHeader from "./AppHeader";
 
 const StatusBarHeight = StatusBar.currentHeight;
 
@@ -43,7 +44,7 @@ const AppScreen = ({ children, customStyles, screen }) => {
 
   return (
     <View style={[styles.container, customStyles]}>
-      <Header
+      <AppHeader
         backgroundColor={colors.primary}
         leftComponent={{
           icon: iconSelector(screen),

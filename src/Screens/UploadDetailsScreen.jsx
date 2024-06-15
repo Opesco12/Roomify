@@ -7,26 +7,45 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swiper from "react-native-swiper";
 import ImageView from "react-native-image-viewing";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { doc, getDoc } from "firebase/firestore";
 
 import AppScreen from "../components/AppScreen";
 import colors from "../constants/Colors";
 
-const UploadDetailsScreen = () => {
+import { db, auth } from "../../firebaseConfig";
+
+const UploadDetailsScreen = ({ route }) => {
+  const [postedBy, setPostedBy] = useState(null);
+  const post = route.params;
+  console.log(post);
+
+  const userId = auth.currentUser.uid;
+
+  const getPostedBy = async () => {
+    const docRef = doc(db, "users", post.postedBy);
+
+    getDoc(docRef)
+      .then((snapshot) => {
+        const user = snapshot.data();
+        const name = user.firstName + " " + user.lastName;
+        setPostedBy(name);
+      })
+      .catch((err) => console.log(err));
+  };
+
   const navigation = useNavigation();
   const [currentImage, setCurrentImage] = useState(null);
   const [visible, setVisible] = useState(false);
 
   const statusBarHeight = StatusBar.currentHeight;
-  const images = [
-    require("../assets/images/house_1.jpg"),
-    require("../assets/images/house_2.jpg"),
-    require("../assets/images/house_3.jpg"),
-  ];
+  useEffect(() => {
+    getPostedBy();
+  }, []);
   return (
     <View
       style={[
@@ -56,7 +75,7 @@ const UploadDetailsScreen = () => {
           activeDotColor={colors.primary}
           showsButtons={true}
         >
-          {images.map((image, index) => (
+          {post.images.map((image, index) => (
             <TouchableWithoutFeedback
               key={index}
               onPress={() => {
@@ -64,41 +83,47 @@ const UploadDetailsScreen = () => {
                 setVisible(true);
               }}
             >
-              <Image source={image} style={styles.image} />
+              <Image src={image} style={styles.image} />
             </TouchableWithoutFeedback>
           ))}
         </Swiper>
       </View>
       <View style={styles.details}>
-        {/* <ScrollView showsVerticalScrollIndicator={false}> */}
-        <View style={styles.topDetails}>
-          <Text style={[styles.text, { fontSize: 18, fontWeight: "600" }]}>
-            One Room Self Contain
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.topDetails}>
+            <Text style={[styles.text, { fontSize: 18, fontWeight: "600" }]}>
+              {post.title}
+            </Text>
+            {userId !== post.postedBy && (
+              <Ionicons
+                name="chatbubble-ellipses-outline"
+                size={24}
+                onPress={() =>
+                  navigation.navigate("Chat", { postedBy, id: post.postedBy })
+                }
+              />
+            )}
+          </View>
+          <Text style={styles.text}>
+            Basic Rent: ₦{post.price.toLocaleString("en-US")}
           </Text>
-          <Ionicons
-            name="chatbubble-ellipses-outline"
-            size={24}
-            onPress={() => navigation.navigate("Chat")}
-          />
-        </View>
-        <Text style={styles.text}>
-          Basic Rent: ₦{(100000).toLocaleString("en-US")}
-        </Text>
-        <Text style={styles.text}>Location: Oke-Odo</Text>
-        <Text style={styles.text}>
-          Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Nulla euismod, nisl eget aliquam ultricies, nunc nisl ultricies nunc,
-          quis aliquam nisl nunc eu nisl. Sed euismod, nulla sit amet aliquam
-          lacinia, nisl nisl aliquam nisl, nec aliquam nisl nisl sit amet nisl.
-          Sed euismod, nulla sit amet aliquam lacinia, nisl nisl aliquam nisl,
-          nec aliquam nisl nisl sit amet nisl.
-        </Text>
-        <Text style={styles.text}>Posted by:Agent Opeyemi</Text>
-        {/* </ScrollView> */}
+          <Text style={styles.text}>Location: {post.location}</Text>
+          <Text style={styles.text}>{post.description}</Text>
+          {post.roommateDescription && (
+            <Text style={[styles.text, { fontSize: 17, fontWeight: "600" }]}>
+              Description of room mate needed
+            </Text>
+          )}
+          {post.roommateDescription && (
+            <Text style={styles.text}>{post.roommateDescription}</Text>
+          )}
+          <Text style={styles.text}>Posted by: {postedBy}</Text>
+        </ScrollView>
       </View>
       <ImageView
-        images={images}
+        images={post.images.map((image) => ({ uri: image }))}
         imageIndex={currentImage}
+        key={post.images}
         visible={visible}
         onRequestClose={() => setVisible(false)}
         swipeToCloseEnabled={true}
@@ -125,7 +150,7 @@ const styles = StyleSheet.create({
   details: {
     backgroundColor: colors.white,
     height: "35%",
-    justifyContent: "space-between",
+
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
@@ -138,6 +163,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+    marginVertical: 10,
   },
   topDetails: {
     alignItems: "center",

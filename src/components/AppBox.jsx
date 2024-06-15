@@ -6,32 +6,44 @@ import {
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 import colors from "../constants/Colors";
 
-const AppBox = () => {
+const AppBox = ({ post }) => {
   const navigation = useNavigation();
-  const images = [
-    require("../assets/images/house_1.jpg"),
-    require("../assets/images/house_2.jpg"),
-    require("../assets/images/house_3.jpg"),
-  ];
-  const thumbnailImages = images.length > 1 && images.slice(0, 2);
+  const thumbnailImages =
+    post.images.length > 1 ? post.images.slice(0, 2) : post.images[0];
   return (
-    <TouchableWithoutFeedback onPress={() => navigation.navigate("Details")}>
+    <TouchableWithoutFeedback
+      onPress={() => navigation.navigate("Details", post)}
+    >
       <View style={styles.container}>
         <View style={styles.top}>
-          {thumbnailImages.map((image, index) => (
-            <Image source={image} key={index} style={styles.images} />
-          ))}
+          {post.images.length > 1 ? (
+            thumbnailImages.map((image, index) => (
+              <Image src={image} key={index} style={styles.images} />
+            ))
+          ) : (
+            <Image src={post.images[0]} style={styles.image} />
+          )}
         </View>
         <View style={styles.bottom}>
-          <Text style={[styles.text, { fontWeight: "600" }]}>
-            A room self contain at Sanrab
+          <Text style={[styles.text, { fontWeight: "600" }]}>{post.title}</Text>
+          <Text numberOfLines={1} style={styles.text}>
+            Location: {post.location}
           </Text>
-          <Text style={styles.text}>Sanrab</Text>
-          <Text style={styles.text}> ₦{(100000).toLocaleString("en-US")}</Text>
+          <Text style={styles.text}>
+            Price: ₦{post.price.toLocaleString("en-US")}
+          </Text>
+          <View style={styles.request}>
+            <AntDesign name="star" color={colors.white} size={15} />
+            <Text
+              style={{ fontSize: 14, fontWeight: "500", color: colors.white }}
+            >
+              {post.type}
+            </Text>
+          </View>
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -45,9 +57,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     height: 50,
     justifyContent: "center",
-    // left: 20,
-    // position: "absolute",
-    // top: 20,
     width: 50,
   },
   bottom: {
@@ -65,6 +74,18 @@ const styles = StyleSheet.create({
   images: {
     height: "100%",
     width: "50%",
+  },
+  image: {
+    height: "100%",
+    width: "100%",
+  },
+  request: {
+    backgroundColor: colors.primary,
+    borderRadius: 6,
+    flexDirection: "row",
+    alignSelf: "flex-end",
+    gap: 5,
+    padding: 2,
   },
   top: {
     flexDirection: "row",

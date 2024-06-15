@@ -1,12 +1,32 @@
 import { StyleSheet, Text, View } from "react-native";
+import { useState, useEffect } from "react";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Avatar, Icon } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
+import { doc, getDoc } from "firebase/firestore";
 
 import colors from "../constants/Colors";
 
+import { auth, db } from "../../firebaseConfig";
+
 const AppDrawerContent = (props) => {
+  const [userData, setUserData] = useState({});
   const navigation = useNavigation();
+
+  const user = auth.currentUser;
+  const userId = user.uid;
+
+  useEffect(() => {
+    const userDocRef = doc(db, "users", userId);
+    getDoc(userDocRef)
+      .then((document) => {
+        if (document.exists()) {
+          const data = document.data();
+          setUserData(data);
+        }
+      })
+      .catch((err) => console.log(err));
+  }, [user]);
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.avatar}>
@@ -14,9 +34,14 @@ const AppDrawerContent = (props) => {
           rounded
           containerStyle={{ backgroundColor: colors.primary }}
           size={"large"}
-          title="E"
+          title={userData.firstName && userData.firstName.slice(0, 1)}
         />
-        <Text style={styles.text}>Emmanuel Oyeleke | Student</Text>
+        {userData && (
+          <Text style={styles.text}>
+            {userData.firstName} {userData.lastName} {"|"}{" "}
+            {userData.accountType}
+          </Text>
+        )}
       </View>
       <DrawerItem
         label="My Posts"
@@ -40,6 +65,12 @@ const AppDrawerContent = (props) => {
         label="Logout"
         icon={({ size }) => <Icon name="logout" size={size} />}
         labelStyle={{ fontSize: 16 }}
+        onPress={() => {
+          auth
+            .signOut()
+            .then(() => navigation.navigate("Login"))
+            .catch((err) => console.log(err));
+        }}
       />
     </DrawerContentScrollView>
   );

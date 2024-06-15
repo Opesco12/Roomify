@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, StatusBar } from "react-native";
+import FlashMessage from "react-native-flash-message";
+import * as SplashScreen from "expo-splash-screen";
 
 import LoginScreen from "./Screens/LoginScreen";
 import SignUp from "./Screens/SignUpScreen";
@@ -15,11 +17,25 @@ import TabNavigator from "./Navigation/TabNavigator";
 import DrawerNavigator from "./Navigation/DrawerNavigator";
 import Navigator from "./Navigation/Navigator";
 
+SplashScreen.preventAutoHideAsync();
 const App = () => {
+  useEffect(() => {
+    const prepare = async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        await SplashScreen.hideAsync();
+      }
+    };
+    prepare();
+  }, []);
   return (
     <>
-      <StatusBar backgroundColor={colors.primary} />
+      <StatusBar translucent={false} />
       <Navigator />
+      <FlashMessage position={"top"} style={{ marginTop: 35 }} />
     </>
   );
 };

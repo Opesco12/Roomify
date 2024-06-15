@@ -1,105 +1,130 @@
 import { StyleSheet, Text, View } from "react-native";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
 import { Header } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
+import {
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+  query,
+  getDocs,
+  where,
+  orderBy,
+} from "firebase/firestore";
 
 import AppScreen from "../components/AppScreen";
+import AppChatWrapper from "../components/AppChatWrapper";
 import colors from "../constants/Colors";
 
-const ChatScreen = () => {
-  const [messages, setMessages] = useState([
-    {
-      _id: 1,
-      text: "Hey there!",
-      createdAt: new Date(Date.UTC(2023, 4, 20, 10, 0, 0)),
-      user: {
-        _id: 1,
-        name: "John",
-      },
+import { auth, db } from "../../firebaseConfig";
+
+import {
+  createConversation,
+  addMessage,
+  getConversations,
+  getMessages,
+} from "../../firebase";
+
+const ChatScreen = ({ route }) => {
+  const [messages, setMessages] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [receiverId, setReceiverId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [receiver, setReceiver] = useState(null);
+  const [conversationId, setConversationId] = useState(null);
+
+  function arraysHaveSameContent(arr1, arr2) {
+    return arr1.every((item) => arr2.some((el) => el === item));
+  }
+
+  const getData = useCallback(async () => {
+    let user, receiver;
+
+    if (route.params.userId && route.params.receiverId) {
+      user = route.params.userId;
+      receiver = route.params.receiverId;
+    } else {
+      user = auth.currentUser.uid;
+      receiver = route.params.id;
+    }
+
+    setUserId(user);
+    setReceiverId(receiver);
+
+    const userRef = doc(db, "users", user);
+    const receiverRef = doc(db, "users", receiver);
+
+    try {
+      const [userSnapshot, receiverSnapshot] = await Promise.all([
+        getDoc(userRef),
+        getDoc(receiverRef),
+      ]);
+
+      setCurrentUser(userSnapshot.data());
+      setReceiver(receiverSnapshot.data());
+
+      if (route.params.conversationId) {
+        setConversationId(route.params.conversationId);
+      } else {
+        const participants = [user, receiver];
+        const conversationsData = await getConversations(user);
+        const existingConversation = conversationsData.find(
+          (convo) =>
+            convo && arraysHaveSameContent(convo.participants, participants)
+        );
+
+        if (existingConversation) {
+          setConversationId(existingConversation.id);
+        } else {
+          const newConversationId = await createConversation(participants);
+          setConversationId(newConversationId);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, [route.params]);
+
+  useEffect(() => {
+    getData();
+  }, [getData]);
+
+  useEffect(() => {
+    const messagesQuery = query(
+      collection(db, "messages"),
+      where("conversationId", "==", conversationId),
+      orderBy("createdAt", "desc")
+    );
+    const unsubscribe = onSnapshot(messagesQuery, (querySnapshot) => {
+      const messagesData = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        const createdAt = data.createdAt && data.createdAt.toDate();
+        return {
+          _id: doc.id,
+          createdAt,
+          text: doc.data().text,
+          user: doc.data().user,
+        };
+      });
+      setMessages(messagesData);
+    });
+
+    return unsubscribe;
+  }, [conversationId]);
+
+  const onSend = useCallback(
+    (newMessages = []) => {
+      newMessages.forEach(async (message) =>
+        addMessage(userId, currentUser.firstName, conversationId, message)
+      );
     },
-    {
-      _id: 2,
-      text: "Hi! How are you?",
-      createdAt: new Date(Date.UTC(2023, 4, 20, 10, 1, 0)),
-      user: {
-        _id: 2,
-        name: "Sarah",
-      },
-    },
-    {
-      _id: 3,
-      text: "I'm doing great, thanks! How about you?",
-      createdAt: new Date(Date.UTC(2023, 4, 20, 10, 2, 0)),
-      user: {
-        _id: 1,
-        name: "John",
-      },
-    },
-    {
-      _id: 4,
-      text: "I'm good too! Just working on a project.",
-      createdAt: new Date(Date.UTC(2023, 4, 20, 10, 3, 0)),
-      user: {
-        _id: 2,
-        name: "Sarah",
-      },
-    },
-    {
-      _id: 5,
-      text: "That's great! What kind of project is it?",
-      createdAt: new Date(Date.UTC(2023, 4, 20, 10, 4, 0)),
-      user: {
-        _id: 1,
-        name: "John",
-      },
-    },
-    {
-      _id: 6,
-      text: "It's a mobile app I'm developing using React Native.",
-      createdAt: new Date(Date.UTC(2023, 4, 20, 10, 5, 0)),
-      user: {
-        _id: 2,
-        name: "Sarah",
-      },
-    },
-    {
-      _id: 7,
-      text: "Wow, that sounds interesting! How's it coming along?",
-      createdAt: new Date(Date.UTC(2023, 4, 20, 10, 6, 0)),
-      user: {
-        _id: 1,
-        name: "John",
-      },
-    },
-    {
-      _id: 8,
-      text: "It's going well so far. I'm learning a lot in the process.",
-      createdAt: new Date(Date.UTC(2023, 4, 20, 10, 7, 0)),
-      user: {
-        _id: 2,
-        name: "Sarah",
-      },
-    },
-    {
-      _id: 9,
-      text: "That's awesome! Let me know if you need any help or feedback.",
-      createdAt: new Date(Date.UTC(2023, 4, 20, 10, 8, 0)),
-      user: {
-        _id: 1,
-        name: "John",
-      },
-    },
-    {
-      _id: 10,
-      text: "Thanks, I appreciate that! I'll definitely reach out if I need anything.",
-      createdAt: new Date(Date.UTC(2023, 4, 20, 10, 9, 0)),
-      user: {
-        _id: 2,
-        name: "Sarah",
-      },
-    },
-  ]);
+    [conversationId]
+  );
 
   const navigation = useNavigation();
   return (
@@ -112,16 +137,14 @@ const ChatScreen = () => {
           onPress: () => navigation.goBack(),
         }}
         centerComponent={{
-          text: "Sarah",
+          text: receiver && receiver.firstName,
           style: { color: "#fff", fontSize: 18 },
         }}
       />
-      <GiftedChat
+      <AppChatWrapper
         messages={messages}
-        onSend={(newMessages) =>
-          setMessages(GiftedChat.append(messages, newMessages))
-        }
-        user={{ _id: 1 }}
+        onSend={onSend}
+        user={{ _id: userId }}
       />
     </View>
   );

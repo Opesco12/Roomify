@@ -8,7 +8,7 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./src/assets/images/splash.png",
+      "image": "./src/assets/images/Roomify-Splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,8 +17,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./src/assets/images/Roomify.png",
+        "backgroundColor": "#007bff"
       }
     },
     "web": {
@@ -33,10 +33,7 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ],
-      [
-        "expo-router",
-        {}
-      ],
+      ["expo-router", {}],
       "expo-asset"
     ],
     "experiments": {

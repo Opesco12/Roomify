@@ -1,6 +1,10 @@
 import { Text, View, Pressable, StyleSheet } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useNavigation } from "@react-navigation/native";
+import { showMessage } from "react-native-flash-message";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 import AppScreen from "../../components/AppScreen";
 import AppFormField from "../../components/AppFormField";
@@ -8,7 +12,59 @@ import AppButtonBg from "../../components/AppButton";
 import LargeText from "../../components/AppLargeText";
 import colors from "../../constants/Colors";
 
+import { db, auth } from "../../../firebaseConfig";
+
 const StudentSignUp = () => {
+  const navigation = useNavigation();
+
+  const handleNavigation = (screen) => {
+    navigation.navigate(screen);
+  };
+  const handleSignUp = (
+    email,
+    password,
+    firstName,
+    lastName,
+    phoneNumber,
+    accountType
+  ) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        const userId = user.uid;
+        const userDocRef = doc(db, "users", userId);
+        const userData = {
+          firstName,
+          lastName,
+          phoneNumber,
+          accountType,
+        };
+
+        console.log(userId);
+        console.log(userDocRef);
+
+        return setDoc(userDocRef, userData);
+      })
+      .then(() => {
+        showMessage({
+          message: "Account succesfully created",
+          type: "success",
+        });
+
+        handleNavigation("Index");
+      })
+      .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          showMessage({
+            message: "The email address is already in use by another account.",
+            type: "warning",
+          });
+        } else {
+          showMessage({ message: error.message, type: "warning" });
+        }
+      });
+  };
+
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Please input a valid email")
@@ -38,7 +94,22 @@ const StudentSignUp = () => {
           phoneNumber: "",
         }}
         onSubmit={(values) => {
-          console.log(values);
+          const {
+            email,
+            password,
+            firstName,
+            lastName,
+            phoneNumber,
+            accountType,
+          } = values;
+          handleSignUp(
+            email,
+            password,
+            firstName,
+            lastName,
+            phoneNumber,
+            accountType
+          );
         }}
       >
         {({ handleSubmit, values }) => (
@@ -70,13 +141,6 @@ const StudentSignUp = () => {
               secureTextEntry
             />
 
-            {/* <AppFormField
-              placeholder={"Account Type"}
-              name={"accountType"}
-              editable={false}
-              value={values.accountType}
-            /> */}
-
             <AppButtonBg text={"Register Now"} onPress={handleSubmit} />
           </View>
         )}
@@ -84,7 +148,10 @@ const StudentSignUp = () => {
 
       <View style={styles.bottomText}>
         <Text style={styles.text}>Already have an account? </Text>
-        <Pressable style={{ justifyContent: "center" }}>
+        <Pressable
+          style={{ justifyContent: "center" }}
+          onPress={() => handleNavigation("Login")}
+        >
           <Text style={{ color: colors.primary, fontWeight: "500" }}>
             Log in
           </Text>
