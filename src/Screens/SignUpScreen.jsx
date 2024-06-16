@@ -1,7 +1,5 @@
 import { Text, View, Pressable, StyleSheet, ScrollView } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 
 import AppScreen from "../components/AppScreen";
 import AgentSignUp from "./AuthSubScreens/AgentSignUp";

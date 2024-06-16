@@ -26,10 +26,6 @@ import { showMessage } from "react-native-flash-message";
 const LoginScreen = () => {
   const navigation = useNavigation();
 
-  const handleNavigation = (screen) => {
-    navigation.navigate(screen);
-  };
-
   const handleSignIn = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
@@ -102,7 +98,7 @@ const LoginScreen = () => {
           <View style={styles.bottomContainer}>
             <Text style={styles.bottomText}>Don't have an account?</Text>
             <TouchableWithoutFeedback
-              onPress={() => handleNavigation("Signup")}
+              onPress={() => navigation.navigate("Signup")}
             >
               <Text style={{ color: colors.primary }}>Sign Up</Text>
             </TouchableWithoutFeedback>
