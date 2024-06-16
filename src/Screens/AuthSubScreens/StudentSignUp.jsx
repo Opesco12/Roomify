@@ -17,71 +17,9 @@ import { db, auth } from "../../../firebaseConfig";
 const StudentSignUp = () => {
   const navigation = useNavigation();
 
-  const handleNavigation = (screen) => {
-    navigation.navigate(screen);
-  };
-  const handleSignUp = (
-    email,
-    password,
-    firstName,
-    lastName,
-    phoneNumber,
-    accountType
-  ) => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        const userId = user.uid;
-        const userDocRef = doc(db, "users", userId);
-        const userData = {
-          firstName,
-          lastName,
-          phoneNumber,
-          accountType,
-        };
-
-        console.log(userId);
-        console.log(userDocRef);
-
-        return setDoc(userDocRef, userData);
-      })
-      .then(() => {
-        showMessage({
-          message: "Account succesfully created",
-          type: "success",
-        });
-
-        handleNavigation("Index");
-      })
-      .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          showMessage({
-            message: "The email address is already in use by another account.",
-            type: "warning",
-          });
-        } else {
-          showMessage({ message: error.message, type: "warning" });
-        }
-      });
-  };
-
-  const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Please input a valid email")
-      .required("Email is required"),
-    password: Yup.string()
-      .min(5, "Password must contain at least 5 characters")
-      .required("Password is required "),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password"), null], "Passwprds must match")
-      .required("Confirm Password is required"),
-    firstName: Yup.string().min(1).required("First Name is required"),
-    lastName: Yup.string().min(1).required("Last Name is required"),
-    phoneNumber: Yup.string().required("Phone Number is required"),
-  });
   return (
     <View style={styles.container}>
-      <LargeText>Create an account as a student</LargeText>
+      <LargeText>Create an account</LargeText>
       <Formik
         validationSchema={validationSchema}
         initialValues={{
@@ -102,17 +40,9 @@ const StudentSignUp = () => {
             phoneNumber,
             accountType,
           } = values;
-          handleSignUp(
-            email,
-            password,
-            firstName,
-            lastName,
-            phoneNumber,
-            accountType
-          );
         }}
       >
-        {({ handleSubmit, values }) => (
+        {({ handleSubmit }) => (
           <View>
             <AppFormField name="firstName" placeholder={"First Name"} />
             <AppFormField name="lastName" placeholder={"Last Name"} />
@@ -163,7 +93,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
   },
-  container: { backgroundColor: colors.white, flex: 1 },
   text: {
     fontSize: 15,
     fontWeight: "500",

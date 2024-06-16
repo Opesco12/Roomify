@@ -4,9 +4,9 @@ import {
   Text,
   Pressable,
   ScrollView,
-  TouchableWithoutFeedback,
+  ActivityIndicator,
 } from "react-native";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useNavigation } from "@react-navigation/native";
@@ -24,13 +24,18 @@ import { doc, getDoc } from "firebase/firestore";
 import { showMessage } from "react-native-flash-message";
 
 const LoginScreen = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigation = useNavigation();
 
   const handleSignIn = (email, password) => {
+    setIsSubmitting(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         showMessage({ message: "Login Successful", type: "success" });
-        handleNavigation("Index");
+        setTimeout(() => {
+          setIsSubmitting(false);
+          navigation.navigate("Index");
+        }, 1500);
       })
       .catch((error) => {
         showMessage({ message: "Invalid email or password", type: "warning" });
@@ -54,7 +59,7 @@ const LoginScreen = () => {
         }}
       />
       <View style={styles.comp}>
-        <ScrollView showsHorizontalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <LargeText>Log in to your account</LargeText>
           <Formik
             initialValues={{ email: "", password: "" }}
@@ -90,18 +95,32 @@ const LoginScreen = () => {
                       Forgot Password?
                     </Text>
                   </Pressable>
-                  <AppButtonBg text={"Login"} onPress={handleSubmit} />
+                  <AppButtonBg
+                    text={
+                      isSubmitting ? (
+                        <ActivityIndicator
+                          color={colors.white}
+                          size={"small"}
+                        />
+                      ) : (
+                        "Login"
+                      )
+                    }
+                    onPress={handleSubmit}
+                  />
                 </View>
               </>
             )}
           </Formik>
           <View style={styles.bottomContainer}>
             <Text style={styles.bottomText}>Don't have an account?</Text>
-            <TouchableWithoutFeedback
-              onPress={() => navigation.navigate("Signup")}
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Signup");
+              }}
             >
               <Text style={{ color: colors.primary }}>Sign Up</Text>
-            </TouchableWithoutFeedback>
+            </Pressable>
           </View>
         </ScrollView>
       </View>
