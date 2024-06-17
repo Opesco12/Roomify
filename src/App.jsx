@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, StatusBar } from "react-native";
+import { StyleSheet, Text, StatusBar, Platform } from "react-native";
 import FlashMessage from "react-native-flash-message";
 import * as SplashScreen from "expo-splash-screen";
 
@@ -17,20 +17,20 @@ import TabNavigator from "./Navigation/TabNavigator";
 import DrawerNavigator from "./Navigation/DrawerNavigator";
 import Navigator from "./Navigation/Navigator";
 
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 const App = () => {
-  useEffect(() => {
-    const prepare = async () => {
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        await SplashScreen.hideAsync();
-      }
-    };
-    prepare();
-  }, []);
+  // useEffect(() => {
+  //   const prepare = async () => {
+  //     try {
+  //       await new Promise((resolve) => setTimeout(resolve, 2000));
+  //     } catch (e) {
+  //       console.warn(e);
+  //     } finally {
+  //       await SplashScreen.hideAsync();
+  //     }
+  //   };
+  //   prepare();
+  // }, []);
   return (
     <>
       <StatusBar translucent={false} />

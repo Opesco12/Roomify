@@ -20,9 +20,7 @@
         "foregroundImage": "./src/assets/images/Roomify.png",
         "backgroundColor": "#007bff"
       },
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ],
+      "permissions": ["android.permission.RECORD_AUDIO"],
       "package": "com.opesco.Roomify"
     },
     "web": {
@@ -37,10 +35,7 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ],
-      [
-        "expo-router",
-        {}
-      ],
+      ["expo-router", {}],
       "expo-asset"
     ],
     "experiments": {

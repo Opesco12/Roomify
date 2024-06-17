@@ -33,7 +33,6 @@ const MessagesScreen = () => {
 
   const fetchConversations = async () => {
     const conversationsData = await getConversations(userId);
-    console.log("conversations: ", conversationsData);
     setConversations(conversationsData);
   };
 
@@ -46,6 +45,24 @@ const MessagesScreen = () => {
   const handleNavigation = (userId, receiverId, conversationId) => {
     navigation.navigate("Chat", { userId, receiverId, conversationId });
   };
+
+  // const scheduleNotification = async (message) => {
+  //   Notifications.setNotificationHandler({
+  //     handleNotification: async () => ({
+  //       shouldShowAlert: true,
+  //       shouldPlaySound: false,
+  //       shouldSetBadge: false,
+  //     }),
+  //   });
+
+  //   await Notifications.scheduleNotificationAsync({
+  //     content: {
+  //       title: "New Message",
+  //       body: message,
+  //     },
+  //     trigger: null,
+  //   });
+  // };
 
   return (
     <View style={styles.container}>

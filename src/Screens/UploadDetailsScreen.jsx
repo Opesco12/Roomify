@@ -22,7 +22,6 @@ import { db, auth } from "../../firebaseConfig";
 const UploadDetailsScreen = ({ route }) => {
   const [postedBy, setPostedBy] = useState(null);
   const post = route.params;
-  console.log(post);
 
   const userId = auth.currentUser.uid;
 
@@ -94,15 +93,6 @@ const UploadDetailsScreen = ({ route }) => {
             <Text style={[styles.text, { fontSize: 18, fontWeight: "600" }]}>
               {post.title}
             </Text>
-            {userId !== post.postedBy && (
-              <Ionicons
-                name="chatbubble-ellipses-outline"
-                size={24}
-                onPress={() =>
-                  navigation.navigate("Chat", { postedBy, id: post.postedBy })
-                }
-              />
-            )}
           </View>
           <Text style={styles.text}>
             Basic Rent: ₦{post.price.toLocaleString("en-US")}
@@ -119,6 +109,18 @@ const UploadDetailsScreen = ({ route }) => {
           )}
           <Text style={styles.text}>Posted by: {postedBy}</Text>
         </ScrollView>
+      </View>
+      <View style={styles.chatButton}>
+        {userId !== post.postedBy && (
+          <Ionicons
+            name="chatbubble-ellipses-outline"
+            size={30}
+            color={colors.white}
+            onPress={() =>
+              navigation.navigate("Chat", { postedBy, id: post.postedBy })
+            }
+          />
+        )}
       </View>
       <ImageView
         images={post.images.map((image) => ({ uri: image }))}
@@ -143,6 +145,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 40,
     zIndex: 3,
+  },
+  chatButton: {
+    position: "absolute",
+    right: 15,
+    bottom: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 55,
+    height: 55,
+    borderRadius: 20,
+    backgroundColor: colors.primary,
   },
   container: {
     flex: 1,

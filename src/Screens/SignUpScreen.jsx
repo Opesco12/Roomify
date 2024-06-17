@@ -68,8 +68,10 @@ const SignUp = () => {
             message: "The email address is already in use by another account.",
             type: "warning",
           });
+          setIsSubmitting(false);
         } else {
           showMessage({ message: error.message, type: "warning" });
+          setIsSubmitting(false);
         }
       });
   };

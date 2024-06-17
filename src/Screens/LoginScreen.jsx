@@ -35,10 +35,11 @@ const LoginScreen = () => {
         setTimeout(() => {
           setIsSubmitting(false);
           navigation.navigate("Index");
-        }, 1500);
+        }, 1000);
       })
       .catch((error) => {
         showMessage({ message: "Invalid email or password", type: "warning" });
+        setIsSubmitting(false);
       });
   };
 
