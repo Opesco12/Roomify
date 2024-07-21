@@ -7,12 +7,12 @@ import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAkixQUQdHt3D3vIGqoLmk2Khw8mwPogho",
-  authDomain: "roomify-app.firebaseapp.com",
-  projectId: "roomify-app",
-  storageBucket: "roomify-app.appspot.com",
-  messagingSenderId: "865879198101",
-  appId: "1:865879198101:web:57fc82b5151acfddd48e9c",
+  apiKey: "AIzaSyA_UO3Qva6IHvlRqnw_Xlg082Zu-k0JYWo",
+  authDomain: "roomify-79728.firebaseapp.com",
+  projectId: "roomify-79728",
+  storageBucket: "roomify-79728.appspot.com",
+  messagingSenderId: "222090450660",
+  appId: "1:222090450660:web:12fb4ae6e6b5f049903ef1",
 };
 
 // Initialize Firebase

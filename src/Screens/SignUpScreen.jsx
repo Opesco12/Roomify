@@ -207,7 +207,7 @@ const SignUp = () => {
             <Text style={styles.text}>Already have an account? </Text>
             <Pressable
               style={{ justifyContent: "center" }}
-              onPress={() => handleNavigation("Login")}
+              onPress={() => handleNavigation("login")}
             >
               <Text style={{ color: colors.primary, fontWeight: "500" }}>
                 Log in

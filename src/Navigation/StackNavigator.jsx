@@ -64,6 +64,7 @@ const StackNavigator = () => {
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       <Stack.Screen name="Details" component={UploadDetailsScreen} />
       <Stack.Screen name="MyPosts" component={UserPostsScreen} />
+      <Stack.Screen name="login" component={LoginScreen} />
     </Stack.Navigator>
   );
 };

@@ -110,8 +110,8 @@ const UploadDetailsScreen = ({ route }) => {
           <Text style={styles.text}>Posted by: {postedBy}</Text>
         </ScrollView>
       </View>
-      <View style={styles.chatButton}>
-        {userId !== post.postedBy && (
+      {userId !== post.postedBy && (
+        <View style={styles.chatButton}>
           <Ionicons
             name="chatbubble-ellipses-outline"
             size={30}
@@ -120,8 +120,8 @@ const UploadDetailsScreen = ({ route }) => {
               navigation.navigate("Chat", { postedBy, id: post.postedBy })
             }
           />
-        )}
-      </View>
+        </View>
+      )}
       <ImageView
         images={post.images.map((image) => ({ uri: image }))}
         imageIndex={currentImage}
