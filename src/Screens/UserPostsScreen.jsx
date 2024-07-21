@@ -8,6 +8,7 @@ import {
   where,
   orderBy,
   deleteDoc,
+  onSnapshot,
 } from "firebase/firestore";
 
 import AppScreen from "../components/AppScreen";
@@ -28,20 +29,32 @@ const UserPostsScreen = () => {
 
     const postsQuery = query(
       collection(db, "posts"),
-      where("postedBy", "==", userId)
+      where("postedBy", "==", userId),
+      orderBy("createdAt", "desc")
     );
 
-    const snapshot = await getDocs(postsQuery);
-    const postsData = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-
-    setData(postsData);
+    // const snapshot = await getDocs(postsQuery);
+    try {
+      const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+        const posts = [];
+        querySnapshot.forEach((doc) => {
+          posts.push({ id: doc.id, ...doc.data() });
+        });
+        setData(posts);
+      });
+      // const postsData = snapshot.docs.map((doc) => ({
+      //   id: doc.id,
+      //   ...doc.data(),
+      // }));
+      return unsubscribe;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    fetchPosts();
+    const unsubscribe = fetchPosts();
+    unsubscribe;
   }, []);
   return (
     <AppScreen screen="My Posts">

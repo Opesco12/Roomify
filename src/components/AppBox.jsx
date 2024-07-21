@@ -24,7 +24,6 @@ const AppBox = ({ post, deletable }) => {
 
   const deletePost = (collection, documentId) => {
     const docRef = doc(db, collection, documentId);
-
     deleteDoc(docRef)
       .then(() => {
         showMessage({
@@ -64,7 +63,7 @@ const AppBox = ({ post, deletable }) => {
                     name="trash-can"
                     size={40}
                     color={colors.white}
-                    onPress={() => deletePost("Posts", post.if)}
+                    onPress={() => deletePost("posts", post.id)}
                   />
                   <AntDesign
                     name="close"
